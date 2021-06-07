@@ -36,21 +36,14 @@ def create_pattern(pattern_len: int, block_size: int = 4) -> str:
     return result[:pattern_len]  # just in case pattern_len is not evenly divisible by block_size, we will need to trim
 
 
-def find_pattern_offset(pattern_to_match):
+def find_pattern_offset(pattern_to_match:str, pattern_len: int, block_size: int = 4)->int:
     """
     :param pattern_to_match: The pattern to search for.  Must match the regex [A-Z]+
     :return: the offset, as an index, the pattern would be located if using the create_pattern function as the generator
     """
     letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    block_size = len(pattern_to_match)  # the block size must be equal to len(pattern_to_match)
     if not match(f"[A-Z]+", pattern_to_match):
         raise InvalidPattern(supplied_pattern=pattern_to_match, block_size=block_size)
-    list_of_n_lists = [list(letters) for i in range(block_size)]
-    count = 0
-    pattern_to_match = tuple(pattern_to_match)
-    for char_tuple in product(*list_of_n_lists):
-        if pattern_to_match == char_tuple:
-            break
-        else:
-            count += block_size
-    return count
+    pattern = create_pattern(pattern_len,block_size)
+    index = pattern.find(pattern_to_match)
+    return index
